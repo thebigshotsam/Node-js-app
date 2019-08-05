@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cart</title>
+   <link rel="stylesheet" href="/css/main.css">
+   <link rel="stylesheet" href="/css/product.css">
+</head>
+<body>
+  <header class="main-header">
+      <nav class="main-header_nav">
+          <ul class="main-header_itemlist">
+              <li class="main-header_item" ><a class="active" href="/">Shop</a></li>
+              <li class="main-header_item"><a href="/admin/add-product">Add Product</a></li>
+              <% if(isAuthenticated){ %>
+              <li  ><a class="main-header_active" href="/cart">Cart</a></li>
+              <li class="main-header_item"><a href="/admin/product-list">Admin Products</a></li>
+              <li class="main-header_item"><a href="/products">Products</a></li>
+              <li class="main-header_item" ><a href="/orders">Orders</a></li>
+            </ul>
+              <ul>
+                    <li class="main-header_item">
+                      <form action="/logout" method="POST">
+                        <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+                       <button type="submit">Logout</button>
+                     </form>
+                   </li>
+                  </ul>
+              <%}%>
+
+              
+         
+      </nav>
+  </header>
+  <main>
+    <% if(prods.length>0){ %>
+        <ul class="cart__item-list">
+            <% for (let product of prods) {  %>
+                <li class="cart__item">
+                    <h1><%= product._doc.title %></h1>
+                    <h2>Quantity: <%= product.quantity %></h2>
+                    <form action="/cart-delete-item/<%= product._doc._id %>" method="POST">
+                      <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+                        <button class="btn danger" type="submit">Delete</button>
+                    </form>
+                </li>
+            <% } %>
+        </ul>
+     
+      <hr>
+      <div class="centered">
+        <!-- <form action="/create-order" method="POST">
+          <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+            <button class="btn" type="submit">Order Now </button>
+        </form> -->
+        <a class="btn" href="/checkout">Order Now!</a>
+      </div>
+      
+  <% } else {%>
+      <h1>No Products Added in Cart</h1>
+      <% } %>        
+</main> 

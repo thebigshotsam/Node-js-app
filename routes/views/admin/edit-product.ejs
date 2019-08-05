@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/product.css">
+      </head>
+    <body>
+      <header class="main-header">
+          <nav class="main-header_nav">
+              <ul class="main-header_itemlist">
+                  <li class="main-header_item" ><a  href="/">Shop</a></li>
+                  <li class="main-header_item"><a  href="/admin/add-product">Add Product</a></li>
+                  <% if(isAuthenticated){ %>
+                  <li class="main-header_item" ><a href="/cart">Cart</a></li>
+                  
+                    <li ><a class="main-header_active" href="/admin/product-list">Admin Products</a></li>
+                    <li  class="main-header_item"><a  href="/products">Products</a></li>
+                    <li class="main-header_item" ><a href="/orders">Orders</a></li>
+              </ul>
+                    <ul>
+                        <li class="main-header_item">
+                          <form action="/logout" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                           <button type="submit">Logout</button>
+                         </form>
+                       </li>
+                      </ul>
+                    <%}else{%>
+                    </ul>
+                      <ul class="main-header_itemlist">
+                          <li class="main-header_item">
+                              
+                              <a href="/login">Login</a>
+                          </li>
+                          <li class="main-header_item">
+                              
+                            <a href="/signup">Signup</a>
+                        </li>
+                        </ul>
+                        <%}%>
+                
+               
+          </nav>
+      </header> 
+        <main>
+          <%if(errorMessage){%>
+            <div class="user-message user-message--error"><%= errorMessage %></div>
+            <%}%>  
+      <form class="product-form" action="/admin/<% if(editing){ %>edit-product<% } else { %>add-product<% } %>/<% if(editing){ %><%= product._id %><% } %>" method="POST" enctype="multipart/form-data" >
+        <div class="form-control">
+        <label for="title">Title</label>
+        <input class="<%= validationErrors.find(e => e.param === 'title')?'validation':'' %>" type="text" name="title" id="title" value="<% if(editing || haserror){ %><%= product.title %><% }  %>">
+        </div>
+        
+            <div class="form-control">
+              <label for="imageUrl">Image</label>
+              <input type="file"
+               name="image"
+               id="image"
+              >
+              </div>
+                <div class="form-control">
+                    <label for="price">Price</label>
+                    <input class="<%= validationErrors.find(e => e.param === 'price')?'validation':'' %>"type="text" name="price" id="price" value="<% if(editing || haserror){ %><%= product.price %><% }  %>">
+                    </div>
+                    <div class="form-control">
+                        <label for="description">Description</label>
+                        <textarea class="<%= validationErrors.find(e => e.param === 'description')?'validation':'' %>" name="description" id="description" rows="5" value="<% if(editing || haserror){ %><%= product.description %><% }  %>"></textarea>
+                        </div>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit"><% if(editing){ %>Update Product<% } else { %>Add Product<% } %></button>
+    </form>
+    
+  </main> 
+</body>
+</html>

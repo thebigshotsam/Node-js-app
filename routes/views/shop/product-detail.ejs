@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Product</title>
+   <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <header class="main-header">
+      <nav class="main-header_nav">
+          <ul class="main-header_itemlist">
+              <li class="main-header_item" ><a  href="/">Shop</a></li>
+              <li class="main-header_item"><a href="/admin/add-product">Add Product</a></li>
+              <% if(isAuthenticated){ %>
+              <li class="main-header_item" ><a href="/cart">Cart</a></li>
+              <li class="main-header_item"><a href="/admin/product-list">Admin Products</a></li>
+              <li  ><a class="main-header_active" href="/products">Products</a></li>
+              <li class="main-header_item" ><a href="/orders">Orders</a></li>
+            </ul>
+              <ul>
+                    <li class="main-header_item">
+                      <form action="/logout" method="POST">
+                        <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+                       <button type="submit">Logout</button>
+                     </form>
+                   </li>
+                  </ul>
+              <%}%>
+              
+         
+         
+      </nav>
+  </header>
+  <main class="centered">
+      <h1><%= product.title %></h1>
+      <hr>
+      <div>
+          <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
+      </div>
+      <h2><%= product.price %></h2>
+      <p><%= product.description %></p>
+      <form action="/cart" method="POST">
+        <% if(isAuthenticated){ %>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="btn">Add to Cart</button>
+        <%}%>
+        <input type="hidden" name="productId" value="<%= product._id %>">
+    </form>
+    
+  </main>

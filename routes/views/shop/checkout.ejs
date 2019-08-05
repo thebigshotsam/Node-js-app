@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= pageTitle %></title>
+   <link rel="stylesheet" href="/css/main.css">
+   <script src="https://js.braintreegateway.com/web/dropin/1.19.0/js/dropin.min.js"></script>
+            <!-- includes  jQuery -->
+            <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+          
+</head>
+<body>
+  <header class="main-header">
+      <nav class="main-header_nav">
+          <ul class="main-header_itemlist">
+              <li class="main-header_item" ><a class="active" href="/">Shop</a></li>
+              <li class="main-header_item"><a href="/admin/add-product">Add Product</a></li>
+              <li class="main-header_item" ><a href="/cart">Cart</a></li>
+              <li class="main-header_item"><a href="/admin/product-list">Admin Products</a></li>
+              <li class="main-header_item"><a href="/products">Products</a></li>
+              <li class="main-header_item" ><a href="/orders">Orders</a></li>
+          </ul>
+      </nav>
+  </header>
+  </body>
+  <main>
+    <% if(prods.length>0){ %>
+        <ul class="cart__item-list">
+            <% for (let product of prods) {  %>
+                <li class="cart__item">
+                    <h1><%= product._doc.title %></h1>
+                    <h2>Quantity: <%= product.quantity %></h2>
+                 </li>
+            <% } %>
+        </ul>
+      <div class="centered">
+        <h2>Total: <%= totalPrice %></h2>
+      </div>
+     
+      <div class="centered">
+        <div id="dropin-wrapper">
+            <div id="checkout-message"></div>
+            <div id="dropin-container"></div>
+            <button id="submit-button">Submit payment</button>
+            </div>
+          <script>
+            var button = document.querySelector('#submit-button');
+          
+            braintree.dropin.create({
+              // Insert your tokenization key here
+              authorization: 'sandbox_24xcrw88_pxng5pc279y2zm92',
+              container: '#dropin-container'
+            }, function (createErr, instance) {
+              button.addEventListener('click', function () {
+                instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+                  // When the user clicks on the 'Submit payment' button this code will send the
+                  // encrypted payment information in a variable called a payment method nonce
+                  $.ajax({
+                    type: 'POST',
+                    url: '/checkout',
+                    data: {'paymentMethodNonce': payload.nonce}
+                  }).done(function(result) {
+                    // Tear down the Drop-in UI
+                    instance.teardown(function (teardownErr) {
+                      if (teardownErr) {
+                        console.error('Could not tear down Drop-in UI!');
+                      } else {
+                        console.info('Drop-in UI has been torn down!');
+                        // Remove the 'Submit payment' button
+                        $('#submit-button').remove();
+                      }
+                    });
+          
+                    if (result.success) {
+                     //$('#checkout-message').html('<a href="http://localhost:3000/create-order">sandbox Control Panel</a> ');
+                     $.ajax({
+                    type: 'GET',
+                    url: '/create-order'
+                   
+                  });
+                    } else {
+                      console.log(result);
+                      $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');
+                    }
+                  });
+                });
+              });
+            });
+          </script>
+      </div>
+    
+  <% } else {%>
+      <h1>No Products Added in Cart</h1>
+      <% } %>
+  </main>
+  <!-- includes the Braintree JS client SDK -->
+<script src="https://js.braintreegateway.com/web/dropin/1.19.0/js/dropin.min.js"></script>
+
+<!-- includes jQuery -->
+<script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>

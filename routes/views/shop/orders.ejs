@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Orders</title>
+   <link rel="stylesheet" href="/css/main.css">
+   <link rel="stylesheet" href="/css/product.css">
+</head>
+<body>
+  <header class="main-header">
+      <nav class="main-header_nav">
+          <ul class="main-header_itemlist">
+              <li class="main-header_item" ><a href="/">Shop</a></li>
+              <li class="main-header_item"><a href="/admin/add-product">Add Product</a></li>
+              <% if(isAuthenticated){ %>
+              <li class="main-header_item" ><a href="/cart">Cart</a></li>
+               <li class="main-header_item"><a href="/admin/product-list">Admin Products</a></li>
+                <li  ><a  href="/products">Products</a></li>
+                <li  ><a class="main-header_active" href="/orders">Orders</a></li>
+            </ul>
+                <ul>
+                        <li class="main-header_item">
+                          <form action="/logout" method="POST">
+                            <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+                           <button type="submit">Logout</button>
+                         </form>
+                       </li>
+                      </ul>
+                <%}%>
+                
+          
+          
+      </nav>
+  </header>
+  </body>
+  <main>
+      <% if(!orders[0]){ %>
+      <h1>Nothing there!</h1>
+      <%} else{%>
+        <ul class="orders">
+            <%for(let order of orders){%>
+                <li class="orders__item">
+                    <h1><%= order._id %>-<a href="/orders/<%=order._id%>">Invoice</a></h1>
+                     <ul class="orders__products">
+                                 <%for(let product of order.products){%> 
+                                 <li class="orders__products-item"><%= product.title %> (<%= product.quantity %>)</li>
+                            <%}%> 
+                                                     
+                        </ul>
+                    </li>
+                <%}%>
+            
+        </ul>
+        <%}%>
+  </main>
+  </html>

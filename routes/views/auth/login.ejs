@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/product.css">
+      </head>
+    <body>
+      <header class="main-header">
+          <nav class="main-header_nav">
+              <ul class="main-header_itemlist">
+                  <li class="main-header_item" ><a  href="/">Shop</a></li>
+                  <li class="main-header_item"><a  href="/admin/add-product">Add Product</a></li>
+              </ul>
+              <ul class="main-header_itemlist">
+                <li class="main-header_item">
+                    <a href="/signup">Signup</a>
+                </li>
+                </ul>
+          </nav>
+      </header> 
+        <main>
+          <% if(errorMessage){ %>
+            <div class="user-message user-message--error"><%= errorMessage %></div>
+            <form class="login-form" action="/login" method="POST" >
+              <div class="form-control">
+              <label for="email">E-mail</label>
+              <input class="<%= (er === 'em') ? 'validate' : ''%>" 
+              type="email"
+              name="email" 
+              id="email"
+              value="<%=email%>" >
+              </div>
+              <div class="form-control">
+                  <label for="password">Password</label>
+                  <input class="<%= (er === 'p') ? 'validate' : ''%>"
+                  type="password" 
+                  name="password" 
+                  id="password" 
+                  value="<%= password %>">
+                  </div>
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                 <button type="submit">Login</button>
+                 <div class="centered">
+                   <a href="/reset" >Reset Password</a>
+                 </div>
+          </form>
+          <%}else{%>
+      <form class="login-form" action="/login" method="POST" >
+        <div class="form-control">
+        <label for="email">E-mail</label>
+        <input type="email" name="email" id="email" >
+        </div>
+        <div class="form-control">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" >
+            </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+           <button type="submit">Login</button>
+           <div class="centered">
+             <a href="/reset" >Reset Password</a>
+           </div>
+    </form>
+    <%}%>
+  </main> 
+</body>
+</html>

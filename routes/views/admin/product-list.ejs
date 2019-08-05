@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= pageTitle %></title>
+   <link rel="stylesheet" href="/css/main.css">
+   <link rel="stylesheet" href="/css/product.css">
+</head>
+<body>
+  <header class="main-header">
+      <nav class="main-header_nav">
+          <ul class="main-header_itemlist">
+              
+              <li class="main-header_item" ><a  href="/">Shop</a></li>
+             
+              <li class="main-header_item"><a href="/admin/add-product">Add Product</a></li>
+              <% if(isAuthenticated){ %>
+              <li class="main-header_item" ><a href="/cart">Cart</a></li>
+                <li ><a class="main-header_active" href="/admin/product-list">Admin Products</a></li>
+                <li class="main-header_item" ><a href="/products">Products</a></li>
+                <li class="main-header_item" ><a href="/orders">Orders</a></li>
+            </ul>
+                <ul>
+                        <li class="main-header_item">
+                          <form action="/logout" method="POST">
+                            <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+                           <button type="submit">Logout</button>
+                         </form>
+                       </li>
+                      </ul>
+                <%}%>
+                
+          
+          
+      </nav>
+  </header> 
+  <main>
+      <% if(prods.length>0){ %>
+        <div class="grid">
+            <% for (let product of prods) { %>
+               
+                <article class="card product-item">
+                    <header class="card__header">
+                        <h1 class="product__title"><%= product.title %></h1>
+                    </header>
+                    <div class="card__image">
+                        <img src="/<%= product.imageUrl %>"
+                            alt="<%= product.title %>">
+                    </div>
+                    <div class="card__content">
+                        <h2 class="product__price">$<%= product.price %></h2>
+                        <p class="product__description"><%= product.description %></p>
+                    </div>
+                    <div class="card__actions">
+                       
+                            <form action="/admin/delete-product/<%= product._id %>" method="POST">
+                                <a href="/admin/edit-product/<%= product._id %>?edit=true" class="btn">Edit</a>
+                                <input type="hidden" name="_csrf"  value="<%= csrfToken %>">
+                               
+                                <button class="btn" type="submit ">Delete</button>
+                                
+                            </form>
+                        
+                    </div>
+                </article>
+                
+            <% } %>
+        </div>
+            <section class="pagination">
+                <%if(page === 1 && (noofpages === 2)){%>
+                <a class="down" href="/admin/product-list/?page=1">1</a>
+                <a class="ac" href="/admin/product-list/?page=2">2</a>
+                <%}else if(page === 1 && (noofpages > page)){%>
+                  <a class="down" href="/admin/product-list/?page=1">1</a>
+                  <a class="ac" href="/admin/product-list/?page=<%= noofpages %>"><%= noofpages %></a>
+                  <a class="ac" href="/admin/product-list/?page=<%= nextpage %>"><%= nextpage %></a>
+                  <%}else if(page === noofpages && noofpages === 2){%>
+                    <a class="ac" href="/admin/product-list/?page=1">1</a>
+                  <a class="down" href="/admin/product-list/?page=2">2</a>
+                  <%}else if(page === 1 && noofpages === 1 ){%>
+                    <a class="down" href="/admin/product-list/?page=1">1</a>
+                    <%}else if(page === noofpages){%>
+                      <a class="ac" href="/admin/product-list/?page=1">1</a>
+                      <a class="ac" href="/admin/product-list/?page=<%= prevpage %>"><%= prevpage %></a>
+                      <a class="down" href="/admin/product-list/?page=<%= page %>"><%= page %></a>
+                     <%}else if(nextpage === noofpages){%>
+                      <a class="ac" href="/admin/product-list/?page=<%= prevpage %>"><%= prevpage %></a>
+                      <a class="down" href="/admin/product-list/?page=<%= page %>"><%= page %></a>
+                      <a class="ac" href="/admin/product-list/?page=<%= nextpage %>"><%= nextpage %></a>
+                      <%}else{%>
+                        <a class="ac" href="/admin/product-list/?page=<%= prevpage %>"><%= prevpage %></a>
+                       <a class="down" href="/admin/product-list/?page=<%= page %>"><%= page %></a>
+                        <a class="ac" href="/admin/product-list/?page=<%= nextpage %>"><%= nextpage %></a>
+                        <a class="ac" href="/admin/product-list/?page=<%= noofpages %>"><%= noofpages %></a>
+                       <%}%>
+              </section>           
+            <% } else {%>
+        <h1>No Products Found</h1>
+        <% } %>        
+  </main> 
+</body>
+</html>
