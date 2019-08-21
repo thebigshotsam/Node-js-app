@@ -74,12 +74,10 @@
                     });
           
                     if (result.success) {
-                     //$('#checkout-message').html('<a href="http://localhost:3000/create-order">sandbox Control Panel</a> ');
-                     $.ajax({
-                    type: 'GET',
-                    url: '/create-order'
+                     $('#checkout-message').html('<a href="http://localhost:3000/create-order">sandbox Control Panel</a> ');
+                     
                    
-                  });
+                  
                     } else {
                       console.log(result);
                       $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');

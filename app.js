@@ -8,15 +8,29 @@ const User=require("./models/user");
 const session=require("express-session");
 const csrf=require("csurf");
 const flash=require("connect-flash");
+const https=require("https");
 const multer=require("multer");
+const helmet=require("helmet");
+const compression=require("compression");
+const morgan=require("morgan");
+const fs=require("fs");
 const MongoDbStore=require("connect-mongodb-session")(session);
+const accessLogStream=fs.createWriteStream(
+    require("path").join(__dirname,"access.log"),
+    {flags:'a'}
+    );
+app.use(helmet());
+app.use(compression());
+app.use(morgan("combined",{stream:accessLogStream}));
 app.set("view engine","ejs");
 app.set("views","views");
-const MONGODB_Uri="mongodb://localhost:27017/shop";
+const MONGODB_Uri=`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-vvcgd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
 const store=new MongoDbStore({
 uri:MONGODB_Uri,
 collection:"sessions"
 });
+// const privateKey=fs.readFileSync("server.Key");
+// const certificate=fs.readFileSync("server.cert");
 const fileStorage=multer.diskStorage({
     destination:(req,file,cb)=>{
         cb(null,"images");
@@ -90,7 +104,7 @@ app.get("/500",errorController.get500);
 // //so we will not use this function
 //  server.listen(3000);//passing port in listen method and it will listen server
 //requests for infinite loops and provide responses
-mongoose.connect("mongodb://localhost:27017/shop",{ useNewUrlParser: true })
+mongoose.connect(MONGODB_Uri,{ useNewUrlParser: true })
 .then(()=>{
     User.findOne().then((user)=>{
         if(!user){
@@ -104,6 +118,8 @@ mongoose.connect("mongodb://localhost:27017/shop",{ useNewUrlParser: true })
        
     })
    
-app.listen(3000);
+// https
+// .createServer({key:privateKey,cert:certificate},app)
+app.listen(process.env.PORT || 3000);
 })
 .catch(err=>console.log(err));
