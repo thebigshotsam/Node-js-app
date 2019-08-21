@@ -14,14 +14,15 @@ const helmet=require("helmet");
 const compression=require("compression");
 const morgan=require("morgan");
 const fs=require("fs");
+app.use(helmet());
+app.use(compression());
+app.use(morgan("combined",{stream:accessLogStream}));
 const MongoDbStore=require("connect-mongodb-session")(session);
 const accessLogStream=fs.createWriteStream(
     require("path").join(__dirname,"access.log"),
     {flags:'a'}
     );
-app.use(helmet());
-app.use(compression());
-app.use(morgan("combined",{stream:accessLogStream}));
+
 app.set("view engine","ejs");
 app.set("views","views");
 const MONGODB_Uri=`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-vvcgd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
